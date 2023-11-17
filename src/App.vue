@@ -1,19 +1,29 @@
 <template>
-  <div>
-    <h1>APP</h1>
+  <div class="container">
+    <router-view v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" v-if="$route.meta.keepAlive" />
+      </keep-alive>
+      <component :is="Component" v-if="!$route.meta.keepAlive" />
+    </router-view>
+
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+// import request from '@/utils/request'
+// import { onMounted } from 'vue'
 
-export default defineComponent({
-  setup() {
-
-
-    return {}
-  }
-})
+// onMounted(() => {
+//   request.get('/hosp/hospital/1/100').then(res => {
+//     console.log(res)
+//   })
+// })
 </script>
 
-<style scoped></style>
+<style>
+body {
+  height: 1000px;
+  border: 1px solid red;
+}
+</style>
