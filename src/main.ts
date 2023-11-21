@@ -1,4 +1,6 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+
 import 'reset.less'
 
 import App from './App.vue'
@@ -11,12 +13,13 @@ import Carousel from '@/components/Carousel/index.vue'
 
 import Vant from 'vant'
 import 'vant/lib/index.css'
-
+const pinia = createPinia()
 const app = createApp(App)
 app.component('HospitalTop', HospitalTop)
 app.component('HospitalBottom', HospitalBottom)
 app.component('Carousel', Carousel)
 app.use(router)
 app.use(Vant)
+app.use(pinia)
 
 app.mount('#app')
