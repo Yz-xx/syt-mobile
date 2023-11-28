@@ -1,12 +1,3 @@
-import { defineStore } from 'pinia'
-import type { Content } from '@/api/home/type'
+import { createPinia } from 'pinia'
 
-export const mainStore = defineStore('main', {
-  state: () => {
-    return {
-      searchResult: [] as Content,
-    }
-  },
-  getters: {},
-  actions: {}
-})
+export default createPinia()

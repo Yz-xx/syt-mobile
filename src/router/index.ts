@@ -21,6 +21,33 @@ export default createRouter({
       },
     },
     {
+      path: '/hospital',
+      name: 'hospital',
+      component: () => import('@/views/Hospital/index.vue'),
+      meta: {
+        title: '医院',
+        keepAlive: false
+      },
+      children: [
+        {
+          path: 'register',
+          component: () => import('@/views/Hospital/Register/index.vue'),
+          meta: {
+            title: '预约挂号',
+            keepAlive: false
+          }
+        },
+        {
+          path: 'register_first',
+          component: () => import('@/views/Hospital/Register/RegisterFirst.vue'),
+          meta: {
+            title: '预约第一步',
+            keepAlive: false
+          },
+        }
+      ]
+    },
+    {
       path: '/',
       redirect: '/home'
     },

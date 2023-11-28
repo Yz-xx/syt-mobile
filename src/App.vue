@@ -7,6 +7,7 @@
       </keep-alive>
       <component :is="Component" v-if="!$route.meta.keepAlive" />
     </router-view>
+    <Login></Login>
   </div>
 </template>
 
@@ -21,9 +22,4 @@
 // })
 </script>
 
-<style>
-body {
-  height: 1000px;
-  border: 1px solid red;
-}
-</style>
+<style></style>

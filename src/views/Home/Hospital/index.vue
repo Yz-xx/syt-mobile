@@ -113,7 +113,7 @@ const onChange = () => {
 
 <style scoped>
 .select {
-  margin-top: 5px;
+  margin-top: 1px;
   box-shadow: 0px 0px 10px -10px #505050;
 }
 

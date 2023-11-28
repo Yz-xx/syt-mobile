@@ -1,7 +1,9 @@
 <template>
-  <div :class="topScroll && !isSearch ? 'top-nav-hidden' : ''" class="top-nav">
+  <div
+    :class="store.topScroll && !isSearch ? 'top-nav-hidden' : ''"
+    class="top-nav">
     <div class="top" v-show="!isSearch">
-      <div class="left">
+      <div class="left" @click="goHome">
         <img src="../../assets/images/logo.png" alt="" />
         <p>预约统一挂号平台</p>
       </div>
@@ -22,22 +24,31 @@
               p-id="4789"></path>
           </svg>
         </div>
-        <div class="user">
-          <svg
-            t="1699888714202"
-            class="icon"
-            viewBox="0 0 1024 1024"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            p-id="7062"
-            width="26"
-            height="26">
-            <path
-              d="M512 545.152c229.76 0 416 126.848 416 270.848 0 130.304-152.448 142.72-351.68 143.872h-128.64C248.448 958.72 96 946.304 96 816c0-144 186.24-270.848 416-270.848z m0 96c-180.16 0-320 92.352-320 174.848 0 30.688 56.192 46.304 272.32 47.872L512 864l49.6-0.192c215.552-1.92 270.4-17.12 270.4-47.808 0-82.496-139.84-174.848-320-174.848zM512 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448z m0 96a128 128 0 1 0 0 256 128 128 0 0 0 0-256z"
-              fill="#515151"
-              p-id="7063"></path>
-          </svg>
-        </div>
+        <van-popover
+          v-model:show="showPopover"
+          theme="dark"
+          :actions="userstore.userInfo.name ? actions1 : actions2"
+          placement="bottom-end"
+          @select="select">
+          <template #reference>
+            <div class="user">
+              <svg
+                t="1699888714202"
+                class="icon"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="7062"
+                width="26"
+                height="26">
+                <path
+                  d="M512 545.152c229.76 0 416 126.848 416 270.848 0 130.304-152.448 142.72-351.68 143.872h-128.64C248.448 958.72 96 946.304 96 816c0-144 186.24-270.848 416-270.848z m0 96c-180.16 0-320 92.352-320 174.848 0 30.688 56.192 46.304 272.32 47.872L512 864l49.6-0.192c215.552-1.92 270.4-17.12 270.4-47.808 0-82.496-139.84-174.848-320-174.848zM512 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448z m0 96a128 128 0 1 0 0 256 128 128 0 0 0 0-256z"
+                  fill="#515151"
+                  p-id="7063"></path>
+              </svg>
+            </div>
+          </template>
+        </van-popover>
       </div>
     </div>
     <div class="search" v-show="isSearch">
@@ -110,19 +121,48 @@ import { ref, onMounted, watch } from "vue";
 import { reqHospitalSearch } from "@/api/home";
 import type { HospitalInfo } from "@/api/home/type";
 import useDebounce from "@/utils/useDebounce";
-import { mainStore } from "@/store";
+import mainStore from "@/store/modules/main";
+import userStore from "@/store/modules/user";
 import { useRouter } from "vue-router";
 
 let isSearch = ref<boolean>(false);
 let nores = ref<boolean>(false);
 let keywords = ref<string>("");
 // let hospitalSearch = ref<Content>([]);
+const userstore = userStore();
 const store = mainStore();
 const router = useRouter();
+
+const showPopover = ref(false);
+const actions2 = [{ text: "登录" }, { text: "注册" }];
+const actions1 = [
+  { text: "实名认证" },
+  { text: "挂号订单" },
+  { text: "就诊人管理" },
+  { text: "退出登录" },
+];
+const select = (actions: any) => {
+  if (actions.text === "登录") {
+    userstore.showLogin = true;
+  }
+  if (actions.text === "实名认证") {
+  }
+  if (actions.text === "挂号订单") {
+  }
+  if (actions.text === "就诊人管理") {
+  }
+  if (actions.text === "退出登录") {
+    userstore.logout();
+    router.push({ path: "/home" });
+  }
+};
+
 let goSearch = () => {
   isSearch.value = true;
 };
-
+let goHome = () => {
+  router.push({ path: "/home" });
+};
 let changeBack = () => {
   isSearch.value = false;
   keywords.value = "";
@@ -141,7 +181,9 @@ const getSearchList = async () => {
     let result: HospitalInfo = await reqHospitalSearch(keywords.value);
     // hospitalSearch.value = result.data;
     store.searchResult = result.data;
-    nores.value = true;
+    if (store.searchResult.length > 0) {
+      nores.value = true;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -152,7 +194,6 @@ watch(keywords, () => {
     useDebounce(getSearchList, 200);
   }
 });
-let topScroll = ref<boolean>(false);
 let scrollTop = ref(0);
 onMounted(() => {
   window.addEventListener("scroll", handleScroll);
@@ -164,9 +205,9 @@ let handleScroll = () => {
 watch(scrollTop, (newValue, oldValue) => {
   if (newValue > 100) {
     if (newValue > oldValue) {
-      topScroll.value = true;
+      store.topScroll = true;
     } else {
-      topScroll.value = false;
+      store.topScroll = false;
     }
   }
 });

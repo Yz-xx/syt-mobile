@@ -4,7 +4,10 @@
       <div class="select">
         <div class="hospital">
           <van-list>
-            <van-cell v-for="item in store.searchResult" :key="item.id">
+            <van-cell
+              v-for="item in store.searchResult"
+              :key="item.id"
+              @click="goHospital(item.hoscode)">
               <div class="card">
                 <img :src="`data:image/jpeg;base64,${item['logoData']}`" />
                 <div class="title">
@@ -25,8 +28,18 @@
 </template>
 
 <script setup lang="ts">
-import { mainStore } from "@/store";
+import mainStore from "@/store/modules/main";
+import { useRouter } from "vue-router";
 const store = mainStore();
+const $router = useRouter();
+const goHospital = (hoscode: string) => {
+  $router.push({
+    path: "/hospital/register",
+    query: {
+      hoscode: hoscode,
+    },
+  });
+};
 </script>
 
 <style scoped>

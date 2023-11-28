@@ -4,6 +4,7 @@
 //目的2:请求拦截器,一般可以在请求头中携带公共的参数:token
 //目的3:响应拦截器,可以简化服务器返回的数据,处理http网络错误
 import axios from 'axios';
+import userStore from '@/store/modules/user'
 
 //@ts-ignore
 import { showSuccessToast, showFailToast } from 'vant';
@@ -16,6 +17,14 @@ const request = axios.create({
 //请求拦截器
 request.interceptors.request.use((config) => {
 
+  //config:请求拦截器回调注入的对象(配置对象),配置对象的身上最终要的一件事情headers属性
+  //可以通过请求头携带公共参数-token
+  //获取用户仓库
+  let userstore = userStore();
+  //token:公共参数,如果用户登录了需要携带
+  if (userstore.userInfo.token) {
+    config.headers.token = userstore.userInfo.token;
+  }
   //config:请求拦截器回调注入的对象(配置对象),配置对象的身上最终要的一件事情headers属性
   //可以通过请求头携带公共参数-token
   return config;

@@ -19,7 +19,10 @@
           error-text="请求失败，点击重新加载"
           :finished="finished"
           @load="onLoad">
-          <van-cell v-for="item in hospitalInfo" :key="item.id">
+          <van-cell
+            v-for="item in hospitalInfo"
+            :key="item.id"
+            @click="goHospital(item.hoscode)">
             <div class="card">
               <img :src="`data:image/jpeg;base64,${item['logoData']}`" />
               <div class="title">
@@ -39,9 +42,13 @@
 
 <script setup lang="ts">
 import Carousel from "@/components/Carousel/index.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { reqHospital } from "@/api/home";
 import type { Content, HospitalResponseData } from "@/api/home/type";
+import { useRouter } from "vue-router";
+import mainStore from "@/store/modules/main";
+const store = mainStore();
+const router = useRouter();
 const menuRef = ref<any>(null);
 
 const value1 = ref<string>("");
@@ -112,6 +119,18 @@ const onChange = () => {
   loading.value = true;
   onLoad();
 };
+
+const goHospital = (hoscode: string) => {
+  router.push({
+    path: "/hospital/register",
+    query: {
+      hoscode: hoscode,
+    },
+  });
+};
+onMounted(() => {
+  store.topScroll = false;
+});
 </script>
 
 <style scoped>
